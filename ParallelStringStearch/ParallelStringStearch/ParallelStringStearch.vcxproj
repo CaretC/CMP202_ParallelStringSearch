@@ -142,11 +142,13 @@
     <ClCompile Include="BenchmarkTimer.cpp" />
     <ClCompile Include="CsvWriter.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PatternListLoader.cpp" />
     <ClCompile Include="TextLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BenchmarkTimer.h" />
     <ClInclude Include="CsvWriter.h" />
+    <ClInclude Include="PatternListLoader.h" />
     <ClInclude Include="TextLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

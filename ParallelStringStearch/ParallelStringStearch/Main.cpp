@@ -10,6 +10,7 @@ CMP 202 Coursework - Parallel String Search
 #include "BenchmarkTimer.h"
 #include "CsvWriter.h"
 #include "TextLoader.h"
+#include "PatternListLoader.h"
 
 // Imports
 // =======
@@ -70,6 +71,20 @@ int main() {
 
 	cout << "testText.txt loaded" << endl;
 	// ================================
+
+	// PatternListLoader Test Code
+	// ===========================
+	cout << "Load textPatterns.txt..." << endl;
+
+	vector<string> patternList;
+
+	PatternListLoader PattLoader;
+	PattLoader.LoadPatternList("textPatterns.txt", patternList);
+	
+	cout << "textPatterns.txt loaded" << endl;
+	// ================================
+
+	cout << "Test Complete!" << endl;
 
 	// Main Code
 	// =========

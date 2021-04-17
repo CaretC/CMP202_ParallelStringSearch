@@ -13,7 +13,6 @@ Loads a .txt file into memory for use with other algorithms.
 // Load the specified text file into the specifed output
 void TextLoader::LoadFile(string inputFilePath, string& outputVariable)
 {
-	// TODO: Load the text from a text file and save in outputVariable
 	// Open input file
 	ifstream inFile;
 	inFile.open(inputFilePath);
