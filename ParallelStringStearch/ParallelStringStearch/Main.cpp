@@ -8,6 +8,7 @@ CMP 202 Coursework - Parallel String Search
 #include <Windows.h> // For Testing!
 
 #include "BenchmarkTimer.h"
+#include "CsvWriter.h"
 
 // Imports
 // =======
@@ -17,6 +18,8 @@ using std::endl;
 // Main
 // ====
 int main() {
+	// BenchmarkTimer Test Code
+	// ========================
 	BenchmarkTimer t1;
 
 	for (int i = 0; i < 5; i++)
@@ -43,4 +46,17 @@ int main() {
 	t1.Clear();
 
 	cout << "Results cleared!" << endl;
+	// ================================
+
+	// CsvWriter Test Code
+	// ===================
+	CsvWriter cw;
+	
+	cw.WriteToFile(timer_results, "testTimerResults.csv");
+	// ================================
+
+	// Main Code
+	// =========
+
+	// ================================
 }
