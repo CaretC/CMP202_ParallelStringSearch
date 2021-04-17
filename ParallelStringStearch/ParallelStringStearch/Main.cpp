@@ -9,6 +9,7 @@ CMP 202 Coursework - Parallel String Search
 
 #include "BenchmarkTimer.h"
 #include "CsvWriter.h"
+#include "TextLoader.h"
 
 // Imports
 // =======
@@ -50,9 +51,24 @@ int main() {
 
 	// CsvWriter Test Code
 	// ===================
-	CsvWriter cw;
-	
+	cout << "Writing testTimerResults.csv..." << endl;
+
+	CsvWriter cw;	
 	cw.WriteToFile(timer_results, "testTimerResults.csv");
+
+	cout << "testTimerResults.csv write complete" << endl;
+	// ================================
+
+	// TextLoader Test Code
+	// ====================
+	cout << "Loading testText.txt..." << endl;
+	
+	TextLoader tl;
+	string loadedTxt;
+
+	tl.LoadFile("testText.txt", loadedTxt);
+
+	cout << "testText.txt loaded" << endl;
 	// ================================
 
 	// Main Code
