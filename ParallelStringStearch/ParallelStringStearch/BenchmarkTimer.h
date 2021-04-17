@@ -1,8 +1,16 @@
+/*
+BenchmarkTimer Class
+====================
+A simple reusable class for timing code execution and storing the results of mutiple runs.
+The timer uses a monotonic clock to try and be as accurate as possible for this purpose.
+*/
+
 #pragma once
 // Includes
 // ========
 #include <chrono>
 #include <vector>
+#include <stdexcept>
 
 // Imports
 // =======
@@ -10,6 +18,7 @@ using std::chrono::duration;
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
 using std::vector;
+using std::runtime_error;
 
 // Type Defs
 // =========
@@ -23,10 +32,10 @@ class BenchmarkTimer
 	// ------
 	public:
 		// Start the timer.
-		void StartTimer();
+		void Start();
 
 		// Stop the timer.
-		void StopTimer();
+		void Stop();
 
 		// Reset the timer duration, default non initialized value is -1.
 		void Reset();
@@ -46,9 +55,19 @@ class BenchmarkTimer
 	// Private
 	// -------
 	private:
+		// Store the duration of the stopped timer
 		long long duration_ms = -1;
+
+		// The time point of the start
 		the_clock::time_point start_time;
+
+		// The time point of the stop
 		the_clock::time_point stop_time;
+
+		// Vector to store saved results
 		vector<long long> results_ms;
+
+		// Bool to confirm if the timer is running
+		bool timerRunning = false;
 };
 

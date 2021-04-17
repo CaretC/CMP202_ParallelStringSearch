@@ -22,11 +22,11 @@ int main() {
 	for (int i = 0; i < 5; i++)
 	{
 		cout << "Starting Time ..." << endl;
-		t1.StartTimer();
+		t1.Start();
 
 		Sleep(2000);
 
-		t1.StopTimer();
+		t1.Stop();
 		cout << "Timer Stopped ..." << endl;
 		cout << "The test task took " << t1.Duration() << "ms!" << endl;
 
