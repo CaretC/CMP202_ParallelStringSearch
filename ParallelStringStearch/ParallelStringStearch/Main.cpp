@@ -19,18 +19,28 @@ using std::endl;
 int main() {
 	BenchmarkTimer t1;
 
-	cout << "Starting Time ..." << endl;
-	t1.StartTimer();
+	for (int i = 0; i < 5; i++)
+	{
+		cout << "Starting Time ..." << endl;
+		t1.StartTimer();
 
-	Sleep(2000);
+		Sleep(2000);
 
-	t1.StopTimer();
-	cout << "Timer Stopped ..." << endl;
+		t1.StopTimer();
+		cout << "Timer Stopped ..." << endl;
+		cout << "The test task took " << t1.Duration() << "ms!" << endl;
 
-	cout << "The test task took " << t1.Duration() << "ms!" << endl;
+		t1.Save();
 
-	t1.Reset();
+		cout << "Result Saved! Timer Reset!" << endl;
+		cout << t1.Duration() << endl;
+	}
 
-	cout << "Timer Reset!" << endl;
-	cout << t1.Duration() << endl;
+	cout << "Looping done!" << endl;
+
+	vector<long long> timer_results = t1.Results();
+
+	t1.Clear();
+
+	cout << "Results cleared!" << endl;
 }

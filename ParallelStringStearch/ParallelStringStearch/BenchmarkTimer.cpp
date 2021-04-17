@@ -21,6 +21,25 @@ void BenchmarkTimer::Reset()
     duration_ms = -1;
 }
 
+// Save the most recent result to results vector. Will reset time in the process.
+void BenchmarkTimer::Save()
+{
+    results_ms.push_back(duration_ms);
+    Reset();
+}
+
+// Clear the results vector.
+void BenchmarkTimer::Clear()
+{
+    results_ms.clear();
+}
+
+// Return all of the results from the results vector.
+vector<long long> BenchmarkTimer::Results()
+{
+    return results_ms;
+}
+
 // Return the elapsed duration of the timer in ms.
 long long BenchmarkTimer::Duration()
 {
