@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BenchmarkTimer.cpp" />
+    <ClCompile Include="CharTable.cpp" />
     <ClCompile Include="CsvWriter.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PatternListLoader.cpp" />
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BenchmarkTimer.h" />
+    <ClInclude Include="CharTable.h" />
     <ClInclude Include="CsvWriter.h" />
     <ClInclude Include="PatternListLoader.h" />
     <ClInclude Include="TextLoader.h" />
