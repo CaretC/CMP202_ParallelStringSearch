@@ -14,6 +14,8 @@ CMP 202 Coursework - Parallel String Search
 #include "TextLoader.h"
 #include "PatternListLoader.h"
 #include "CharTable.h"
+#include "TaskFarm.h"
+#include "SearchTask.h"
 
 // Imports
 // =======
@@ -38,49 +40,8 @@ void threadBM(SearchArgs args);
 // Main
 // ====
 int main() {
-	// BenchmarkTimer Test Code
-	// ========================
-	//BenchmarkTimer t1;
-
-	//for (int i = 0; i < 5; i++)
-	//{
-	//	cout << "Starting Time ..." << endl;
-	//	t1.Start();
-
-	//	Sleep(2000);
-
-	//	t1.Stop();
-	//	cout << "Timer Stopped ..." << endl;
-	//	cout << "The test task took " << t1.Duration() << "ms!" << endl;
-
-	//	t1.Save();
-
-	//	cout << "Result Saved! Timer Reset!" << endl;
-	//	cout << t1.Duration() << endl;
-	//}
-
-	//cout << "Looping done!" << endl;
-
-	//vector<long long> timer_results = t1.Results();
-
-	//t1.Clear();
-
-	//cout << "Results cleared!" << endl;
-	// ================================
-
-	// CsvWriter Test Code
-	// ===================
-	//cout << "Writing testTimerResults.csv..." << endl;
-
-	//CsvWriter cw;	
-	//cw.WriteToFile(timer_results, "testTimerResults.csv");
-
-	//cout << "testTimerResults.csv write complete" << endl;
-	// ================================
-
-	// TextLoader Test Code
-	// ====================
-	//string textFile = "AliceInWonderland.txt";
+	// Load text
+	// ----------
 	string textFile = "testText.txt";
 	cout << "Loading " << textFile << "..." << endl;
 	
@@ -90,10 +51,10 @@ int main() {
 	tl.LoadFile(textFile, loadedTxt);
 
 	cout << textFile << " loaded" << endl;
-	// ================================
+	// ---------------------------------
 
-	// PatternListLoader Test Code
-	// ===========================
+	// Load Pattern List
+	// -----------------
 	cout << "Load textPatterns.txt..." << endl;
 
 	vector<string> patternList;
@@ -102,29 +63,16 @@ int main() {
 	PattLoader.LoadPatternList("textPatterns.txt", patternList);
 	
 	cout << "textPatterns.txt loaded" << endl;
-	// ================================
-
-	//cout << "Test Complete!" << endl;
-
-	// Boyer-Moore-Horspool Test Code
-	// ==============================
-	//cout << "Conducting string search" << endl;
-
-	//int results = BoyerMooreHorspool("the", loadedTxt);
-
-	//cout << "String search complete " << results << " pattern matches found" << endl;
-	// ================================
+	// ---------------------------------------
 
 	// Main Code
-	// =========
+	// ---------
 	int numberOfPatterns = patternList.size();
 
-	// Test pattern array
-	string patterns[3] = { "the", "a", "time" };
-
-	// Sequencial
-	// ----------
-	cout << "Staring sequencial search..." << endl;
+	// +++++++++++++++++
+	// Sequential Search
+	// +++++++++++++++++
+	cout << "Staring sequential search..." << endl;
 
 	BenchmarkTimer timerSeq;
 	timerSeq.Start();
@@ -136,18 +84,18 @@ int main() {
 
 	timerSeq.Stop();
 
-	cout << "Sequencial search completed in " << timerSeq.Duration() << "ms" << endl;
+	cout << "Sequential search completed in " << timerSeq.Duration() << "ms" << endl;
 
 
-
-	// Parallel
-	// --------
-	cout << "Starting parallel search..." << endl;
+	// +++++++++++++++++++++++++++++++++++++++
+	// Parallel Search (Basic Implementation)
+	// +++++++++++++++++++++++++++++++++++++++
+	cout << "Starting parallel search (basic)..." << endl;
 
 	BenchmarkTimer timerPar;
 	timerPar.Start();
 
-	//Define the number of threads to use
+	// Define the number of threads to use
 	const unsigned int numThreads = patternList.size();
 
 	// Threads message
@@ -177,9 +125,36 @@ int main() {
 
 	// Done
 	cout << "All threads done!" << endl;
-	cout << "Parallel search complete!" << "Search took " << timerPar.Duration() << "ms" << endl;
-	// ================================
+	cout << "Parallel search (basic) complete!" << "Search took " << timerPar.Duration() << "ms" << endl;
+
+	// +++++++++++++++++++++++++++++++++
+	// Parallel Search (Farmer & Worker)
+	// +++++++++++++++++++++++++++++++++
+	cout << "Starting parallel search (Farm & Worker)..." << endl;
+
+	BenchmarkTimer farmTimer;
+	farmTimer.Start();
+
+	TaskFarm farm;
+
+	// Add a task for each of the patterns to be searched for
+	for (int i = 0; i < patternList.size(); i++)
+	{
+		farm.Add(new SearchTask(patternList[i], &loadedTxt));
+	}
+
+	// Run all the farm tasks
+	farm.Run();
+
+	farmTimer.Stop();
+
+	cout << "Farm Processing Compete!" << endl;
+	cout << "Parallel search (Farm & Worker) complete!" << "Search took " << farmTimer.Duration() << "ms" << endl;
+
 }
+// ============================================================================================================================
+
+
 
 // Thread BM
 void threadBM(SearchArgs args)
@@ -187,6 +162,8 @@ void threadBM(SearchArgs args)
 	int matches = BoyerMooreHorspool(args.pattern, args.text);
 	//cout << matches << endl;
 }
+
+
 
 // Boyer-Moore-Horspool
 // ====================
@@ -228,11 +205,12 @@ int BoyerMooreHorspool(string pattern, string& text)
 		if (j == pattTable.Length())
 		{
 			matches++;
+			// TODO: Save this somewhere
 			//cout << "Match found at position " << i << endl;
 		}
 		else
 		{
-			//cout << "No match in the tet found!" << endl;
+			//cout << "No match in the text found!" << endl;
 		}
 	}
 
