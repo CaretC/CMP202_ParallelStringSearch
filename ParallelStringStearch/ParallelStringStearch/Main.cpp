@@ -7,7 +7,6 @@ CMP 202 Coursework - Parallel String Search
 #include <iostream>
 #include <thread>
 #include <string>
-#include <Windows.h> // For Testing!
 
 #include "BenchmarkTimer.h"
 #include "CsvWriter.h"
@@ -23,19 +22,6 @@ using std::cout;
 using std::endl;
 using std::thread;
 using std::string;
-
-// Thread struct
-// =============
-struct SearchArgs
-{
-	string pattern;
-	string text;
-};
-
-// Function Prototypes
-// ===================
-int BoyerMooreHorspool(string pattern, string& text);
-void threadBM(SearchArgs args);
 
 // Main
 // ====
@@ -79,7 +65,8 @@ int main() {
 
 	for (int i = 0; i < numberOfPatterns; i++)
 	{
-		BoyerMooreHorspool(patternList[i], loadedTxt);
+		SearchTask search(patternList[i], &loadedTxt);
+		search.Run();
 	}
 
 	timerSeq.Stop();
@@ -98,21 +85,21 @@ int main() {
 	// Define the number of threads to use
 	const unsigned int numThreads = patternList.size();
 
-	// Threads message
-	//cout << "This program will use " << numThreads << " to process patterns" << endl;
-
-	// Make threads array to store the threads
+	// Store the threads
 	vector<thread> threads;
 
-	// Argument for the threads
-	SearchArgs threadArgs;	
-	threadArgs.text = loadedTxt;
+	// Store SearchTasks
+	vector<SearchTask> searches;
 
+	// Make Tasks
+	for (int i = 0; i < numThreads; i++)
+	{
+		searches.push_back(SearchTask(patternList[i], &loadedTxt));
+	}
 	// Populate the threads
 	for (int i = 0; i < numThreads; i++)
 	{
-		threadArgs.pattern = patternList[i];
-		threads.push_back(thread(threadBM, threadArgs));
+		threads.push_back(thread(&SearchTask::Run, searches[i]));
 	}
 
 	// Join all of the threads
@@ -150,69 +137,5 @@ int main() {
 
 	cout << "Farm Processing Compete!" << endl;
 	cout << "Parallel search (Farm & Worker) complete!" << "Search took " << farmTimer.Duration() << "ms" << endl;
-
 }
 // ============================================================================================================================
-
-
-
-// Thread BM
-void threadBM(SearchArgs args)
-{
-	int matches = BoyerMooreHorspool(args.pattern, args.text);
-	//cout << matches << endl;
-}
-
-
-
-// Boyer-Moore-Horspool
-// ====================
-// A very basic implementation of the boyer moore horspool algorithm to search for a single pattern in a single 
-// continuous string.
-int BoyerMooreHorspool(string pattern, string& text)
-{
-	// Valid matches
-	int matches = 0;
-
-	// Pre-process the pattern into char table
-	CharTable pattTable(pattern);
-	//cout << "Pattern pre-processed" << endl;
-
-	// Search the text for the string
-	for (int i = 0; i < text.length() - pattTable.Length(); i++)
-	{
-		// Check if the tail character is in the pattTable
-		int skipStep = pattTable.In(text[i + pattTable.Length() - 1]);
-
-		if (skipStep != 0)
-		{
-			i += skipStep - 1;
-			continue;
-		}
-
-		// Check for match
-		int j;
-		for (j = 0; j < pattTable.Length(); j++)
-		{
-			if (text[i + j] != pattern[j])
-			{
-				// This is not a match
-				break;
-			}
-		}
-
-		// Check if the match loop exited after finding string or breaking
-		if (j == pattTable.Length())
-		{
-			matches++;
-			// TODO: Save this somewhere
-			//cout << "Match found at position " << i << endl;
-		}
-		else
-		{
-			//cout << "No match in the text found!" << endl;
-		}
-	}
-
-	return matches;
-}
