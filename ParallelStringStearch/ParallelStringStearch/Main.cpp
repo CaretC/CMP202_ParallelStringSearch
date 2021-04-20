@@ -8,6 +8,7 @@ CMP 202 Coursework - Parallel String Search
 #include <thread>
 #include <string>
 
+#include "ConsoleUI.h"
 #include "BenchmarkTimer.h"
 #include "CsvWriter.h"
 #include "TextLoader.h"
@@ -26,29 +27,38 @@ using std::string;
 // Main
 // ====
 int main() {
+	// Console UI
+	// ----------
+	ConsoleUI ui;
+
+	// Welcome Screen
+	// --------------
+	ui.PrintWelcome();
+	ui.WaitForKeyPress();
+	ui.Clear();
+
 	// Load text
 	// ----------
 	string textFile = "testText.txt";
-	cout << "Loading " << textFile << "..." << endl;
+	ui.PrintFileLoadingMessage(textFile);
 	
 	TextLoader tl;
 	string loadedTxt;
-
 	tl.LoadFile(textFile, loadedTxt);
 
-	cout << textFile << " loaded" << endl;
+	ui.PrintFileLoadMessage(textFile);
 	// ---------------------------------
 
 	// Load Pattern List
 	// -----------------
-	cout << "Load textPatterns.txt..." << endl;
+	string patternFile = "textPatterns.txt";
+	ui.PrintFileLoadingMessage(patternFile);
 
 	vector<string> patternList;
-
 	PatternListLoader PattLoader;
 	PattLoader.LoadPatternList("textPatterns.txt", patternList);
 	
-	cout << "textPatterns.txt loaded" << endl;
+	ui.PrintFileLoadMessage(patternFile);
 	// ---------------------------------------
 
 	// Main Code
@@ -58,7 +68,8 @@ int main() {
 	// +++++++++++++++++
 	// Sequential Search
 	// +++++++++++++++++
-	cout << "Staring sequential search..." << endl;
+	//cout << "Staring sequential search..." << endl;
+	ui.PrintSearchStartMessage("Sequential Search");
 
 	BenchmarkTimer timerSeq;
 	timerSeq.Start();
@@ -71,13 +82,14 @@ int main() {
 
 	timerSeq.Stop();
 
-	cout << "Sequential search completed in " << timerSeq.Duration() << "ms" << endl;
+	ui.PrintSearchCompleteMessage("Sequential CPU Search");
+	ui.PrintSearchTiming("Sequential CPU Search", timerSeq.Duration());
 
 
 	// +++++++++++++++++++++++++++++++++++++++
 	// Parallel Search (Basic Implementation)
 	// +++++++++++++++++++++++++++++++++++++++
-	cout << "Starting parallel search (basic)..." << endl;
+	ui.PrintSearchStartMessage("Parallel CPU Search (Basic)");
 
 	BenchmarkTimer timerPar;
 	timerPar.Start();
@@ -110,14 +122,14 @@ int main() {
 
 	timerPar.Stop();
 
-	// Done
-	cout << "All threads done!" << endl;
-	cout << "Parallel search (basic) complete!" << "Search took " << timerPar.Duration() << "ms" << endl;
+	ui.PrintSearchCompleteMessage("Parallel CPU Search (Basic)");
+	ui.PrintSearchTiming("Parallel CPU Search (Basic)", timerPar.Duration());
+
 
 	// +++++++++++++++++++++++++++++++++
 	// Parallel Search (Farmer & Worker)
 	// +++++++++++++++++++++++++++++++++
-	cout << "Starting parallel search (Farm & Worker)..." << endl;
+	ui.PrintSearchStartMessage("Parallel CPU Search (Farm & Worker)");
 
 	BenchmarkTimer farmTimer;
 	farmTimer.Start();
@@ -135,7 +147,7 @@ int main() {
 
 	farmTimer.Stop();
 
-	cout << "Farm Processing Compete!" << endl;
-	cout << "Parallel search (Farm & Worker) complete!" << "Search took " << farmTimer.Duration() << "ms" << endl;
+	ui.PrintSearchCompleteMessage("Parallel CPU Search (Farm & Worker)");
+	ui.PrintSearchTiming("Parallel CPU Search (Farm & Worker)", farmTimer.Duration());
 }
 // ============================================================================================================================
