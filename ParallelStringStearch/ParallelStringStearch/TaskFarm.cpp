@@ -10,8 +10,9 @@ Task farm to process all the tasks in a farm utilizing the specified number of t
 
 // Constructor
 // ===========
-TaskFarm::TaskFarm()
+TaskFarm::TaskFarm(int threads)
 {
+	numberOfThreads = threads;
 }
 
 // Public Functions
@@ -24,7 +25,7 @@ void TaskFarm::Add(Task* task)
 }
 
 // Run all the tasks in the Farm. 
-void TaskFarm::Run()
+void TaskFarm::Run(vector<int>* outResults)
 {
 	// Vector to store the worker threads
 	vector<thread*> worker_threads;
@@ -49,7 +50,8 @@ void TaskFarm::Run()
 				// Unlock task queue
 				mutex_task_queue.unlock();
 
-				taskToRun->Run();
+				int result = taskToRun->Run();
+				outResults->push_back(result);
 			}
 			else
 			{

@@ -16,5 +16,5 @@ class Task {
 		}
 
 		// Run the task. This must be overridden by inheriting class
-		virtual void Run() = 0;
+		virtual int Run() = 0;
 };

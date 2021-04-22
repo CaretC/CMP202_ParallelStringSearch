@@ -187,6 +187,48 @@ void ConsoleUI::Clear()
 	cout << endl;
 }
 
+// Print the pattern hit results
+void ConsoleUI::PrintResults(string searchName, vector<int>* results, vector<string>* patternList)
+{
+	string line = " ";
+
+	for (int i = 0; i < (searchName.size() + 8); i++)
+	{
+		line += "=";
+	}
+
+	cout << endl;
+	cout << line << endl;
+
+	setTextColor(consoleColor::CYAN);
+	cout << " " << searchName;
+
+	setTextDefault();
+	cout << " Results" << endl;
+
+	cout << line << endl;
+
+	cout << " Pattern\t" << "Matches" << endl;
+	cout << " -------\t" << "-------" << endl;
+
+	for (int i = 0; i < results->size(); i++)
+	{
+		setTextColor(consoleColor::MAGENTA);
+		cout << " " << (*patternList)[i];
+		
+		setTextDefault();
+		cout << "\t--\t";
+		
+		setTextColor(consoleColor::CYAN);
+		cout << (*results)[i] << endl;
+
+		setTextDefault();
+	}
+
+	cout << line << endl;
+	cout << endl;
+}
+
 
 // Private Functions
 // =================

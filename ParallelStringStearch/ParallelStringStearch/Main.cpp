@@ -16,6 +16,7 @@ CMP 202 Coursework - Parallel String Search
 #include "CharTable.h"
 #include "TaskFarm.h"
 #include "SearchTask.h"
+#include "StringSearcher.h"
 
 // Imports
 // =======
@@ -40,6 +41,7 @@ int main() {
 	// Load text
 	// ----------
 	string textFile = "testText.txt";
+	//string textFile = "smallTestText.txt";
 	ui.PrintFileLoadingMessage(textFile);
 	
 	TextLoader tl;
@@ -59,95 +61,67 @@ int main() {
 	PattLoader.LoadPatternList("textPatterns.txt", patternList);
 	
 	ui.PrintFileLoadMessage(patternFile);
+	cout << endl;
 	// ---------------------------------------
 
 	// Main Code
 	// ---------
 	int numberOfPatterns = patternList.size();
 
+
+	// TODO: Store all of the results for each pattern search. Maybe in a vector<vector<int>>
+	// TODO: Include signaling between threads (e.g. conditional variable or semaphor etc.) maybe use this to process the results or something.....
+	
+	// TODO: Replace all of the searches with the StringSearcher equivalent
+	// +++++++++++++++++
+	// String Searcher
+	// +++++++++++++++++
+	StringSearcher Searcher(&loadedTxt, &patternList, &ui);
+
 	// +++++++++++++++++
 	// Sequential Search
 	// +++++++++++++++++
-	//cout << "Staring sequential search..." << endl;
-	ui.PrintSearchStartMessage("Sequential Search");
+	vector<int> sequentialResults;
 
 	BenchmarkTimer timerSeq;
 	timerSeq.Start();
 
-	for (int i = 0; i < numberOfPatterns; i++)
-	{
-		SearchTask search(patternList[i], &loadedTxt);
-		search.Run();
-	}
+	sequentialResults = Searcher.SearchSequential();
 
 	timerSeq.Stop();
-
-	ui.PrintSearchCompleteMessage("Sequential CPU Search");
 	ui.PrintSearchTiming("Sequential CPU Search", timerSeq.Duration());
+
+	ui.PrintResults("Sequential CPU Search", &sequentialResults, &patternList);
 
 
 	// +++++++++++++++++++++++++++++++++++++++
 	// Parallel Search (Basic Implementation)
 	// +++++++++++++++++++++++++++++++++++++++
-	ui.PrintSearchStartMessage("Parallel CPU Search (Basic)");
+	vector<int> simpParallelResults;
 
 	BenchmarkTimer timerPar;
 	timerPar.Start();
 
-	// Define the number of threads to use
-	const unsigned int numThreads = patternList.size();
-
-	// Store the threads
-	vector<thread> threads;
-
-	// Store SearchTasks
-	vector<SearchTask> searches;
-
-	// Make Tasks
-	for (int i = 0; i < numThreads; i++)
-	{
-		searches.push_back(SearchTask(patternList[i], &loadedTxt));
-	}
-	// Populate the threads
-	for (int i = 0; i < numThreads; i++)
-	{
-		threads.push_back(thread(&SearchTask::Run, searches[i]));
-	}
-
-	// Join all of the threads
-	for (int i = 0; i < numThreads; i++)
-	{
-		threads[i].join();
-	}
+	simpParallelResults = Searcher.SearchParallelSimple(numberOfPatterns);
 
 	timerPar.Stop();
-
-	ui.PrintSearchCompleteMessage("Parallel CPU Search (Basic)");
 	ui.PrintSearchTiming("Parallel CPU Search (Basic)", timerPar.Duration());
 
+	ui.PrintResults("Parallel CPU Search (Basic)", &simpParallelResults, &patternList);
 
 	// +++++++++++++++++++++++++++++++++
 	// Parallel Search (Farmer & Worker)
 	// +++++++++++++++++++++++++++++++++
-	ui.PrintSearchStartMessage("Parallel CPU Search (Farm & Worker)");
+	vector<int> taskParallelResults;
 
 	BenchmarkTimer farmTimer;
 	farmTimer.Start();
 
-	TaskFarm farm;
-
-	// Add a task for each of the patterns to be searched for
-	for (int i = 0; i < patternList.size(); i++)
-	{
-		farm.Add(new SearchTask(patternList[i], &loadedTxt));
-	}
-
-	// Run all the farm tasks
-	farm.Run();
+	taskParallelResults = Searcher.SearchParallelTasks(numberOfPatterns);
 
 	farmTimer.Stop();
-
-	ui.PrintSearchCompleteMessage("Parallel CPU Search (Farm & Worker)");
 	ui.PrintSearchTiming("Parallel CPU Search (Farm & Worker)", farmTimer.Duration());
+
+	ui.PrintResults("Parallel CPU Search (Farm & Worker)", &taskParallelResults, &patternList);
 }
 // ============================================================================================================================

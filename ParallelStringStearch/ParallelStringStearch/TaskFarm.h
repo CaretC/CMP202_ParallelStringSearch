@@ -31,19 +31,19 @@ class TaskFarm
 	// ------
 	public:
 		// Constructor
-		TaskFarm();
+		TaskFarm(int threads);
 
 		// Add a task to the Farm, the task will be deleted once it had been run.
 		void Add(Task* task);
 
 		// Run all the tasks in the Farm. 
-		void Run();
+		void Run(vector<int>* outResults);
 
 	// Private
 	// -------
 	private:
 		// Number of threads to use to process the farm. (Default 1)
-		unsigned int numberOfThreads = 8;
+		unsigned int numberOfThreads = 1;
 
 		// Farm task queue and protection mutex
 		queue<Task*> task_queue;

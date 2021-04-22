@@ -11,6 +11,7 @@ This class provides some set functions for the console UI, simplifying message p
 #include <string>
 #include <Windows.h>
 #include <assert.h>
+#include <vector>
 
 // Imports
 // =======
@@ -18,6 +19,7 @@ using std::cout;
 using std::cin;
 using std::endl;
 using std::string;
+using std::vector;
 
 // Class
 // =====
@@ -64,6 +66,9 @@ class ConsoleUI
 
 		// Clear the console
 		void Clear();
+
+		// Print the pattern hit results
+		void PrintResults(string searchName, vector<int>* results, vector<string>* patternList);
 
 	// Private
 	// -------

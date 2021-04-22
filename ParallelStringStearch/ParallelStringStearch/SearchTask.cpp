@@ -19,9 +19,16 @@ SearchTask::SearchTask(string pattern, string* text)
 // Public Functions
 // ================
 // Run this SearchTask
-void SearchTask::Run()
+int SearchTask::Run()
 {
-	BMHSearch(pattern, p_text);
+	int matches = BMHSearch(pattern, p_text);
+	return matches;	
+}
+
+// Run this SearchTask, for used when it is required to run in parallel and still capture the result
+void SearchTask::RunParallel(vector<int>* outResults)
+{
+	outResults->push_back(BMHSearch(pattern, p_text));
 }
 
 // Private Functions
