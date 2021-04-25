@@ -128,6 +128,12 @@ int StringSearcher::SearchParallelTasks(vector<int>* positonsOuput)
 	return 0;
 }
 
+// Get the PatternList assosciated with this StringSearcher instance
+vector<string>* StringSearcher::GetPatternList()
+{
+	return pPatternList;
+}
+
 // Private Functions
 // =================
 

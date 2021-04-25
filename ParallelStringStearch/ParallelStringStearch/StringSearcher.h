@@ -51,6 +51,9 @@ class StringSearcher
 		// Conduct a task based parallel search and save the positions to an output vector
 		int SearchParallelTasks(vector<int>* positonsOuput);
 
+		// Get the PatternList pointer assosciated with this StringSearcher instance
+		vector<string>* GetPatternList();
+
 	// Private
 	// -------
 	private:
