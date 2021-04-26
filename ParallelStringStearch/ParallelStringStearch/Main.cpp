@@ -25,6 +25,9 @@ using std::endl;
 using std::thread;
 using std::string;
 
+// TESTTING
+const int THREADS = 1;
+
 // Function Prototypes
 // ===================
 void PrintWelcomeScreen(ConsoleUI* ui);
@@ -71,11 +74,11 @@ int main() {
 
 	// Parallel Search (Basic Implementation)
 	// --------------------------------------
-	vector<int> simpParallelResults = ParallelSearchBasic(&ui, &Searcher, numberOfPatterns);
+	vector<int> simpParallelResults = ParallelSearchBasic(&ui, &Searcher, THREADS);
 
 	// Parallel Search (Task Based)
 	// ----------------------------
-	vector<int> taskParallelResults = ParallelSearchTasks(&ui, &Searcher, numberOfPatterns);
+	vector<int> taskParallelResults = ParallelSearchTasks(&ui, &Searcher, THREADS);
 }
 // ============================================================================================================================
 
@@ -115,6 +118,7 @@ vector<string> LoadPatternListFile(ConsoleUI* ui, string filePath)
 	cout << endl;
 	return patternList;
 }
+
 // Conduct Sequential Search
 vector<int> SequentialSearch(ConsoleUI* ui, StringSearcher* searcher)
 {
@@ -140,7 +144,6 @@ vector<int> ParallelSearchBasic(ConsoleUI* ui, StringSearcher* searcher, int thr
 	BenchmarkTimer timerPar;
 	timerPar.Start();
 
-	// TODO: Sort the number of threads selected to split over the specified threads.
 	results = searcher->SearchParallelSimple(threadQuantity);
 
 	timerPar.Stop();

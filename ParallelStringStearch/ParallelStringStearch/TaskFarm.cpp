@@ -73,9 +73,10 @@ void TaskFarm::Run(vector<int>* outResults)
 		worker_threads[i]->join();
 	}
 
+	//HACK: Check through this!
 	// Clean up memory
 	for (int i = 0; i < numberOfThreads; i++)
 	{
-		delete worker_threads[i];
+		//delete worker_threads[i];
 	}
 }

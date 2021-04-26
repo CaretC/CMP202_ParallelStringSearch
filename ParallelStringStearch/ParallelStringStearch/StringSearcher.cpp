@@ -68,22 +68,41 @@ vector<int> StringSearcher::SearchParallelSimple(int searchThreads)
 	// Store SearchTasks
 	vector<SearchTask> searches;
 
-	// Make Tasks
-	for (int i = 0; i < numThreads; i++)
+	// New Implementation
+	// ++++++++++++++++++++++++++++++
+	int pos = 0;
+
+	//Make Tasks
+	for (int i = 0; i < pPatternList->size(); i++)
 	{
 		searches.push_back(SearchTask((*pPatternList)[i], pSearchText));
 	}
 
-	// Populate the threads
-	for (int i = 0; i < numThreads; i++)
+	// Process tasks over threads
+	while (pos < pPatternList->size())
 	{
-		threads.push_back(thread(&SearchTask::RunParallel, searches[i], &results));
-	}
+		// Populate threads
+		int threadsCreated = 0;
+		for (int i = 0; i < searchThreads; i++)
+		{
+			if ((i + pos) < pPatternList->size())
+			{
+				threads.push_back(thread(&SearchTask::RunParallel, searches[i + pos], &results));
+				threadsCreated++;
+			}
+		}
 
-	// Join all of the threads
-	for (int i = 0; i < numThreads; i++)
-	{
-		threads[i].join();
+		// Join threads
+		for (int i = 0; i < threadsCreated; i++)
+		{
+			threads[i].join();
+		}
+
+		// Clear up
+		threads.clear();
+
+		pos += threadsCreated;
+		threadsCreated = 0;
 	}
 
 	pUi->PrintSearchCompleteMessage(searchName);
