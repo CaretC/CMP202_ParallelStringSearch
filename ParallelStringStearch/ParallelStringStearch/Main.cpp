@@ -25,9 +25,6 @@ using std::endl;
 using std::thread;
 using std::string;
 
-// TESTTING
-const int THREADS = 1;
-
 // Function Prototypes
 // ===================
 void PrintWelcomeScreen(ConsoleUI* ui);
@@ -49,12 +46,18 @@ int main() {
 	// ----------
 	ConsoleUI ui;
 	string searchText;
+	CsvWriter cw;
 	vector<string> patternList;
 	StringSearcher Searcher(&searchText, &patternList, &ui);
 
+	// Thread Timings
 	long long timingSeq = 0;
 	vector<long long> timingSimp;
 	vector<long long> timingTask;
+
+	// Pattern Timings
+	vector<long long> timingSimpPatt;
+	vector<long long> timingTaskPatt;
 
 	// Welcome Screen
 	// --------------
@@ -76,20 +79,46 @@ int main() {
 	// -----------------
 	vector<int> sequentialResults = SequentialSearch(&ui, &Searcher, &timingSeq);
 
-	// Loop from x - x threads
-	for (int i = 1; i <= 20; i++)
+	// Vary Thread Number
+	// -------------------
+	for (int threads = 1; threads <= 20; threads++)
 	{
 		// Parallel Search (Basic Implementation)
 		// --------------------------------------
-		vector<int> simpParallelResults = ParallelSearchBasic(&ui, &Searcher, i, &timingSimp);
+		vector<int> simpParallelResults = ParallelSearchBasic(&ui, &Searcher, threads, &timingSimp);
 
 		// Parallel Search (Task Based)
 		// ----------------------------
-		vector<int> taskParallelResults = ParallelSearchTasks(&ui, &Searcher, i, &timingTask);
+		vector<int> taskParallelResults = ParallelSearchTasks(&ui, &Searcher, threads, &timingTask);
 	}
 
-	CsvWriter cw;
-	cw.WriteToFile(timingSeq, timingSimp, timingTask, "testTiming.csv");
+	cw.WriteToFile(timingSeq, timingSimp, timingTask, "varyThreadsTiming.csv");
+
+	// Vary Patterns
+	// --------------
+	for (int patterns = 1; patterns <= 20; patterns++)
+	{
+		string msg = "Searching for " + patterns;
+		ui.PrintMessage(msg);
+		vector<string> varyPatt;
+
+		for (int i = 0; i < patterns; i++)
+		{
+			varyPatt.push_back(patternList[i]);
+		}
+
+		StringSearcher pattSearch(&searchText, &varyPatt, &ui);
+
+		vector<int> simpParallelResults = ParallelSearchBasic(&ui, &pattSearch, 8, &timingSimpPatt);
+		vector<int> taskParallelResults = ParallelSearchTasks(&ui, &pattSearch, 8, &timingTaskPatt);
+	}
+
+	long long x = 0;
+	cw.WriteToFile(x, timingSimpPatt, timingTaskPatt, "varyPatternTiming.csv");
+
+	// Vary Text Length
+	// ----------------
+	// TODO: Implement
 }
 // ============================================================================================================================
 
