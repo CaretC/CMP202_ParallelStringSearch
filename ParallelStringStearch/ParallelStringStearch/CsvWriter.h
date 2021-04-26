@@ -32,6 +32,9 @@ class CsvWriter
 		// Write the resuts from BenchmarkTimer to the output file as .csv
 		void WriteToFile(vector<long long>& results, string outputFilePath);
 
+		// Write 3 searches results to file
+		void WriteToFile(long long& seqResult, vector<long long>& simResults, vector<long long>& taskResults, string outputFilePath);
+
 	// Private
 	// -------
 	private:

@@ -33,9 +33,9 @@ const int THREADS = 1;
 void PrintWelcomeScreen(ConsoleUI* ui);
 string LoadSearchTextFile(ConsoleUI* ui, string filePath);
 vector<string> LoadPatternListFile(ConsoleUI* ui, string filePath);
-vector<int> SequentialSearch(ConsoleUI* ui, StringSearcher* searcher);
-vector<int> ParallelSearchBasic(ConsoleUI* ui, StringSearcher* searcher, int threadQuantity);
-vector<int> ParallelSearchTasks(ConsoleUI* ui, StringSearcher* searcher, int threadQuantity);
+vector<int> SequentialSearch(ConsoleUI* ui, StringSearcher* searcher, long long* outTiming);
+vector<int> ParallelSearchBasic(ConsoleUI* ui, StringSearcher* searcher, int threadQuantity, vector<long long>* outTiming);
+vector<int> ParallelSearchTasks(ConsoleUI* ui, StringSearcher* searcher, int threadQuantity, vector<long long>* outTiming);
 
 // TODO: Store all of the results for each pattern search. Maybe in a vector<vector<int>>
 // TODO: Include signaling between threads (e.g. conditional variable or semaphor etc.) maybe use this to process the results or something.....
@@ -51,6 +51,10 @@ int main() {
 	string searchText;
 	vector<string> patternList;
 	StringSearcher Searcher(&searchText, &patternList, &ui);
+
+	long long timingSeq = 0;
+	vector<long long> timingSimp;
+	vector<long long> timingTask;
 
 	// Welcome Screen
 	// --------------
@@ -70,15 +74,22 @@ int main() {
 
 	// Sequential Search
 	// -----------------
-	vector<int> sequentialResults = SequentialSearch(&ui, &Searcher);
+	vector<int> sequentialResults = SequentialSearch(&ui, &Searcher, &timingSeq);
 
-	// Parallel Search (Basic Implementation)
-	// --------------------------------------
-	vector<int> simpParallelResults = ParallelSearchBasic(&ui, &Searcher, THREADS);
+	// Loop from x - x threads
+	for (int i = 1; i <= 20; i++)
+	{
+		// Parallel Search (Basic Implementation)
+		// --------------------------------------
+		vector<int> simpParallelResults = ParallelSearchBasic(&ui, &Searcher, i, &timingSimp);
 
-	// Parallel Search (Task Based)
-	// ----------------------------
-	vector<int> taskParallelResults = ParallelSearchTasks(&ui, &Searcher, THREADS);
+		// Parallel Search (Task Based)
+		// ----------------------------
+		vector<int> taskParallelResults = ParallelSearchTasks(&ui, &Searcher, i, &timingTask);
+	}
+
+	CsvWriter cw;
+	cw.WriteToFile(timingSeq, timingSimp, timingTask, "testTiming.csv");
 }
 // ============================================================================================================================
 
@@ -120,7 +131,7 @@ vector<string> LoadPatternListFile(ConsoleUI* ui, string filePath)
 }
 
 // Conduct Sequential Search
-vector<int> SequentialSearch(ConsoleUI* ui, StringSearcher* searcher)
+vector<int> SequentialSearch(ConsoleUI* ui, StringSearcher* searcher, long long* outTiming)
 {
 	vector<int> results;
 
@@ -131,13 +142,14 @@ vector<int> SequentialSearch(ConsoleUI* ui, StringSearcher* searcher)
 
 	timerSeq.Stop();
 	ui->PrintSearchTiming("Sequential CPU Search", timerSeq.Duration());
+	*outTiming = timerSeq.Duration();
 
 	ui->PrintResults("Sequential CPU Search", &results, searcher->GetPatternList());
 	return results;
 }
 
 // Conduct Parallel Search (Basic)
-vector<int> ParallelSearchBasic(ConsoleUI* ui, StringSearcher* searcher, int threadQuantity)
+vector<int> ParallelSearchBasic(ConsoleUI* ui, StringSearcher* searcher, int threadQuantity, vector<long long>* outTiming)
 {
 	vector<int> results;
 
@@ -150,11 +162,13 @@ vector<int> ParallelSearchBasic(ConsoleUI* ui, StringSearcher* searcher, int thr
 	ui->PrintSearchTiming("Parallel CPU Search (Basic)", timerPar.Duration());
 
 	ui->PrintResults("Parallel CPU Search (Basic)", &results, searcher->GetPatternList());
+	outTiming->push_back(timerPar.Duration());
+
 	return results;
 }
 
 // Conduct Parallel Search (TaskBased)
-vector<int> ParallelSearchTasks(ConsoleUI* ui, StringSearcher* searcher, int threadQuantity)
+vector<int> ParallelSearchTasks(ConsoleUI* ui, StringSearcher* searcher, int threadQuantity, vector<long long>* outTiming)
 {
 	vector<int> results;
 
@@ -167,5 +181,7 @@ vector<int> ParallelSearchTasks(ConsoleUI* ui, StringSearcher* searcher, int thr
 	ui->PrintSearchTiming("Parallel CPU Search (Farm & Worker)", farmTimer.Duration());
 
 	ui->PrintResults("Parallel CPU Search (Farm & Worker)", &results, searcher->GetPatternList());
+	outTiming->push_back(farmTimer.Duration());
+
 	return results;
 }
