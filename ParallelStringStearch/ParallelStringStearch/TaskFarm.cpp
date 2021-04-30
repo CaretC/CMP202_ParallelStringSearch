@@ -51,7 +51,10 @@ void TaskFarm::Run(vector<int>* outResults)
 				mutex_task_queue.unlock();
 
 				int result = taskToRun->Run();
+
+				mutex_result.lock();
 				outResults->push_back(result);
+				mutex_result.unlock();
 			}
 			else
 			{
@@ -77,6 +80,6 @@ void TaskFarm::Run(vector<int>* outResults)
 	// Clean up memory
 	for (int i = 0; i < numberOfThreads; i++)
 	{
-		//delete worker_threads[i];
+		delete worker_threads[i];
 	}
 }

@@ -50,7 +50,7 @@ void CsvWriter::WriteToFile(long long& seqResult, vector<long long>& simResults,
 	if (outFile.is_open())
 	{
 		// Write results content to file
-		for (int i = 0; i < simResults.size(); i++)
+		for (int i = 0; i < taskResults.size(); i++)
 		{
 			outFile << (i + 1) << ",";
 			outFile << seqResult << ",";

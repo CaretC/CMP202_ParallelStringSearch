@@ -77,7 +77,7 @@ int main() {
 
 	// Sequential Search
 	// -----------------
-	vector<int> sequentialResults = SequentialSearch(&ui, &Searcher, &timingSeq);
+	//vector<int> sequentialResults = SequentialSearch(&ui, &Searcher, &timingSeq);
 
 	// Vary Thread Number
 	// -------------------
@@ -85,8 +85,12 @@ int main() {
 	{
 		// Parallel Search (Basic Implementation)
 		// --------------------------------------
-		vector<int> simpParallelResults = ParallelSearchBasic(&ui, &Searcher, threads, &timingSimp);
+		//vector<int> simpParallelResults = ParallelSearchBasic(&ui, &Searcher, threads, &timingSimp);
+		timingSimp.push_back(0); //REMOVE
+	}
 
+	for (int threads = 1; threads <= 20; threads++)
+	{
 		// Parallel Search (Task Based)
 		// ----------------------------
 		vector<int> taskParallelResults = ParallelSearchTasks(&ui, &Searcher, threads, &timingTask);
@@ -96,7 +100,7 @@ int main() {
 
 	// Vary Patterns
 	// --------------
-	for (int patterns = 1; patterns <= 20; patterns++)
+	for (int patterns = 1; patterns <= 100; patterns++)
 	{
 		string msg = "Searching for " + patterns;
 		ui.PrintMessage(msg);
@@ -104,12 +108,13 @@ int main() {
 
 		for (int i = 0; i < patterns; i++)
 		{
-			varyPatt.push_back(patternList[i]);
+			varyPatt.push_back(patternList[i]);			
 		}
 
 		StringSearcher pattSearch(&searchText, &varyPatt, &ui);
 
-		vector<int> simpParallelResults = ParallelSearchBasic(&ui, &pattSearch, 8, &timingSimpPatt);
+		//vector<int> simpParallelResults = ParallelSearchBasic(&ui, &pattSearch, 8, &timingSimpPatt);
+		timingSimpPatt.push_back(0); //REMOVE
 		vector<int> taskParallelResults = ParallelSearchTasks(&ui, &pattSearch, 8, &timingTaskPatt);
 	}
 

@@ -9,6 +9,7 @@ A single string search task to be processed by the farm over multiple threads. I
 // ========
 #include <string>
 #include <vector>
+#include <mutex>
 
 #include "Task.h";
 #include "CharTable.h"
@@ -17,6 +18,7 @@ A single string search task to be processed by the farm over multiple threads. I
 // =======
 using std::string;
 using std::vector;
+using std::mutex;
 
 // Class
 // =====
@@ -32,7 +34,7 @@ class SearchTask : public Task
 		int Run();
 
 		// Run this SearchTask, for used when it is required to run in parallel and still capture the result
-		void RunParallel(vector<int>* outResults);
+		void RunParallel(vector<int>* outResults, mutex* p_results_mutex);
 
 	// Private
 	// -------

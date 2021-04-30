@@ -48,5 +48,6 @@ class TaskFarm
 		// Farm task queue and protection mutex
 		queue<Task*> task_queue;
 		mutex mutex_task_queue;
+		mutex mutex_result;
 };
 

@@ -58,12 +58,13 @@ vector<int> StringSearcher::SearchParallelSimple(int searchThreads)
 	pUi->PrintSearchStartMessage(searchName);
 
 	vector<int> results;
+	mutex mutex_resutls;
 
 	// Define the number of threads to use
 	const unsigned int numThreads = searchThreads;
 
 	// Store the threads
-	vector<thread> threads;
+	vector<thread*> threads;
 
 	// Store SearchTasks
 	vector<SearchTask> searches;
@@ -87,7 +88,7 @@ vector<int> StringSearcher::SearchParallelSimple(int searchThreads)
 		{
 			if ((i + pos) < pPatternList->size())
 			{
-				threads.push_back(thread(&SearchTask::RunParallel, searches[i + pos], &results));
+				threads.push_back(new thread(&SearchTask::RunParallel, searches[i + pos], &results, &mutex_resutls));
 				threadsCreated++;
 			}
 		}
@@ -95,7 +96,14 @@ vector<int> StringSearcher::SearchParallelSimple(int searchThreads)
 		// Join threads
 		for (int i = 0; i < threadsCreated; i++)
 		{
-			threads[i].join();
+			threads[i]->join();
+		}
+
+		//HACK: Check through this!
+		// Clean up memory
+		for (int i = 0; i < threads.size(); i++)
+		{
+			delete threads[i];
 		}
 
 		// Clear up
