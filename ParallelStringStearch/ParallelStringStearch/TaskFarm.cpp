@@ -25,12 +25,8 @@ void TaskFarm::Add(SearchTask* task)
 }
 
 // Run all the tasks in the Farm. 
-//void TaskFarm::Run(vector<int>* outResults)
 void TaskFarm::Run(unordered_map<string, int>* outResults)
 {
-	// Test - Unordered map to store results]
-	//unordered_map<string, int> results_map;
-
 	// Vector to store the worker threads
 	vector<thread*> worker_threads;
 
@@ -82,7 +78,6 @@ void TaskFarm::Run(unordered_map<string, int>* outResults)
 		worker_threads[i]->join();
 	}
 
-	//HACK: Check through this!
 	// Clean up memory
 	for (int i = 0; i < numberOfThreads; i++)
 	{

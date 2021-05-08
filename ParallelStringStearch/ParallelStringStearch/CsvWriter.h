@@ -33,7 +33,7 @@ class CsvWriter
 		void WriteToFile(vector<long long>& results, string outputFilePath);
 
 		// Write 3 searches results to file
-		void WriteToFile(long long& seqResult, vector<long long>& simResults, vector<long long>& taskResults, string outputFilePath);
+		void WriteToFile(long long& seqResult, vector<long long>& taskResults, string outputFilePath);
 
 	// Private
 	// -------

@@ -46,7 +46,6 @@ class TaskFarm
 
 		// Run all the tasks in the Farm. 
 		void Run(unordered_map<string, int>* outResults);
-		//void Run(vector<int>* outResults);
 
 	// Private
 	// -------

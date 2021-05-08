@@ -40,7 +40,7 @@ void CsvWriter::WriteToFile(vector<long long>& results, string outputFilePath)
 	}
 }
 // Write 3 searches results to file
-void CsvWriter::WriteToFile(long long& seqResult, vector<long long>& simResults, vector<long long>& taskResults, string outputFilePath)
+void CsvWriter::WriteToFile(long long& seqResult, vector<long long>& taskResults, string outputFilePath)
 {
 	// Set ouput file stream
 	ofstream outFile;
@@ -54,7 +54,6 @@ void CsvWriter::WriteToFile(long long& seqResult, vector<long long>& simResults,
 		{
 			outFile << (i + 1) << ",";
 			outFile << seqResult << ",";
-			outFile << simResults[i] << ",";
 			outFile << taskResults[i] << "," << endl;
 
 		}
