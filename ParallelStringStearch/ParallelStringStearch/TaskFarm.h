@@ -12,7 +12,12 @@ Task farm to process all the tasks in a farm utilizing the specified number of t
 #include <mutex>
 #include <vector>
 
+// Test
+#include <unordered_map>
+#include <string>
+
 #include "Task.h"
+#include "SearchTask.h"
 
 // Imports
 // =======
@@ -22,6 +27,9 @@ using std::mutex;
 using std::unique_lock;
 using std::vector;
 
+// Test
+using std::unordered_map;
+using std::string;
 
 // Class
 // =====
@@ -34,10 +42,11 @@ class TaskFarm
 		TaskFarm(int threads);
 
 		// Add a task to the Farm, the task will be deleted once it had been run.
-		void Add(Task* task);
+		void Add(SearchTask* task);
 
 		// Run all the tasks in the Farm. 
-		void Run(vector<int>* outResults);
+		void Run(unordered_map<string, int>* outResults);
+		//void Run(vector<int>* outResults);
 
 	// Private
 	// -------
@@ -46,7 +55,7 @@ class TaskFarm
 		unsigned int numberOfThreads = 1;
 
 		// Farm task queue and protection mutex
-		queue<Task*> task_queue;
+		queue<SearchTask*> task_queue;
 		mutex mutex_task_queue;
 		mutex mutex_result;
 };

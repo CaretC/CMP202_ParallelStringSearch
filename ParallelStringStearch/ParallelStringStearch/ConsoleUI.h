@@ -12,6 +12,8 @@ This class provides some set functions for the console UI, simplifying message p
 #include <Windows.h>
 #include <assert.h>
 #include <vector>
+#include <unordered_map>
+#include <mutex>
 
 // Imports
 // =======
@@ -20,6 +22,9 @@ using std::cin;
 using std::endl;
 using std::string;
 using std::vector;
+using std::unordered_map;
+using std::mutex;
+using std::unique_lock;
 
 // Class
 // =====
@@ -70,11 +75,16 @@ class ConsoleUI
 		// Print the pattern hit results
 		void PrintResults(string searchName, vector<int>* results, vector<string>* patternList);
 
+		void PrintResults(string searchName, unordered_map<string, int>* results, vector<string>* patternList);
+
 	// Private
 	// -------
 	private:
 		// Console Handle
 		HANDLE hConsole;
+
+		// Console Mutex
+		mutex consoleMutex;
 
 		// Console colors
 		enum consoleColor

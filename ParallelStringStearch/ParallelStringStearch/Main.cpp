@@ -8,6 +8,9 @@ CMP 202 Coursework - Parallel String Search
 #include <thread>
 #include <string>
 
+// Test
+#include <unordered_map>
+
 #include "ConsoleUI.h"
 #include "BenchmarkTimer.h"
 #include "CsvWriter.h"
@@ -25,6 +28,9 @@ using std::endl;
 using std::thread;
 using std::string;
 
+// Test
+using std::unordered_map;
+
 // Function Prototypes
 // ===================
 void PrintWelcomeScreen(ConsoleUI* ui);
@@ -32,7 +38,7 @@ string LoadSearchTextFile(ConsoleUI* ui, string filePath);
 vector<string> LoadPatternListFile(ConsoleUI* ui, string filePath);
 vector<int> SequentialSearch(ConsoleUI* ui, StringSearcher* searcher, long long* outTiming);
 vector<int> ParallelSearchBasic(ConsoleUI* ui, StringSearcher* searcher, int threadQuantity, vector<long long>* outTiming);
-vector<int> ParallelSearchTasks(ConsoleUI* ui, StringSearcher* searcher, int threadQuantity, vector<long long>* outTiming);
+unordered_map<string, int> ParallelSearchTasks(ConsoleUI* ui, StringSearcher* searcher, int threadQuantity, vector<long long>* outTiming);
 
 // TODO: Store all of the results for each pattern search. Maybe in a vector<vector<int>>
 // TODO: Include signaling between threads (e.g. conditional variable or semaphor etc.) maybe use this to process the results or something.....
@@ -65,11 +71,15 @@ int main() {
 
 	// Load text
 	// ----------
-	searchText = LoadSearchTextFile(&ui, "testText.txt");
+	//searchText = LoadSearchTextFile(&ui, "testText.txt");
+	searchText = LoadSearchTextFile(&ui, "bible.txt");
+	//searchText = LoadSearchTextFile(&ui, "calibrationText.txt");
 
 	// Load Pattern List
 	// -----------------
-	patternList = LoadPatternListFile(&ui, "textPatterns.txt");
+	//patternList = LoadPatternListFile(&ui, "textPatterns.txt");
+	patternList = LoadPatternListFile(&ui, "100-Common.txt");
+	//patternList = LoadPatternListFile(&ui, "calibrationPat.txt");
 
 	// Main Code
 	// ---------
@@ -77,15 +87,18 @@ int main() {
 
 	// Sequential Search
 	// -----------------
-	//vector<int> sequentialResults = SequentialSearch(&ui, &Searcher, &timingSeq);
+	vector<int> sequentialResults = SequentialSearch(&ui, &Searcher, &timingSeq);
 
 	// Vary Thread Number
 	// -------------------
+	vector<int> simpParallelResults;
 	for (int threads = 1; threads <= 20; threads++)
 	{
 		// Parallel Search (Basic Implementation)
 		// --------------------------------------
-		//vector<int> simpParallelResults = ParallelSearchBasic(&ui, &Searcher, threads, &timingSimp);
+		//simpParallelResults = ParallelSearchBasic(&ui, &Searcher, threads, &timingSimp);
+		//Sleep(10);
+		//simpParallelResults.clear();
 		timingSimp.push_back(0); //REMOVE
 	}
 
@@ -93,14 +106,14 @@ int main() {
 	{
 		// Parallel Search (Task Based)
 		// ----------------------------
-		vector<int> taskParallelResults = ParallelSearchTasks(&ui, &Searcher, threads, &timingTask);
+		unordered_map<string, int> taskParallelResults = ParallelSearchTasks(&ui, &Searcher, threads, &timingTask);
 	}
 
 	cw.WriteToFile(timingSeq, timingSimp, timingTask, "varyThreadsTiming.csv");
 
 	// Vary Patterns
 	// --------------
-	for (int patterns = 1; patterns <= 100; patterns++)
+	for (int patterns = 1; patterns <= patternList.size(); patterns++)
 	{
 		string msg = "Searching for " + patterns;
 		ui.PrintMessage(msg);
@@ -115,7 +128,7 @@ int main() {
 
 		//vector<int> simpParallelResults = ParallelSearchBasic(&ui, &pattSearch, 8, &timingSimpPatt);
 		timingSimpPatt.push_back(0); //REMOVE
-		vector<int> taskParallelResults = ParallelSearchTasks(&ui, &pattSearch, 8, &timingTaskPatt);
+		unordered_map<string, int> taskParallelResults = ParallelSearchTasks(&ui, &pattSearch, 8, &timingTaskPatt);
 	}
 
 	long long x = 0;
@@ -202,9 +215,9 @@ vector<int> ParallelSearchBasic(ConsoleUI* ui, StringSearcher* searcher, int thr
 }
 
 // Conduct Parallel Search (TaskBased)
-vector<int> ParallelSearchTasks(ConsoleUI* ui, StringSearcher* searcher, int threadQuantity, vector<long long>* outTiming)
+unordered_map<string, int> ParallelSearchTasks(ConsoleUI* ui, StringSearcher* searcher, int threadQuantity, vector<long long>* outTiming)
 {
-	vector<int> results;
+	unordered_map<string, int> results;
 
 	BenchmarkTimer farmTimer;
 	farmTimer.Start();

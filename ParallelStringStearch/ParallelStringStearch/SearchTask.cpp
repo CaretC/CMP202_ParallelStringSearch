@@ -26,11 +26,15 @@ int SearchTask::Run()
 }
 
 // Run this SearchTask, for used when it is required to run in parallel and still capture the result
-void SearchTask::RunParallel(vector<int>* outResults, mutex* p_results_mutex)
+void SearchTask::RunParallel(vector<int>* outResults)
 {
-	//p_results_mutex->lock();
-	outResults->push_back(BMHSearch(pattern, p_text));
-	//p_results_mutex->unlock();
+	int result = BMHSearch(pattern, p_text);
+	outResults->push_back(result);
+}
+// Reutrns the Seach Task pattern
+string SearchTask::GetPattern()
+{
+	return pattern;
 }
 
 // Private Functions

@@ -34,7 +34,10 @@ class SearchTask : public Task
 		int Run();
 
 		// Run this SearchTask, for used when it is required to run in parallel and still capture the result
-		void RunParallel(vector<int>* outResults, mutex* p_results_mutex);
+		void RunParallel(vector<int>* outResults);
+
+		// Reutrns the Seach Task pattern
+		string GetPattern();
 
 	// Private
 	// -------

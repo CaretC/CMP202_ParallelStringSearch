@@ -56,12 +56,14 @@ void ConsoleUI::PrintWelcome()
 // Print a generic message to the console
 void ConsoleUI::PrintMessage(string message)
 {
+	unique_lock<mutex> lock(consoleMutex);
 	cout << " " << message << endl;
 }
 
 // Print a messasge that a specific file is loading
 void ConsoleUI::PrintFileLoadingMessage(string filePath)
 {
+	unique_lock<mutex> lock(consoleMutex);
 	cout << " Loading ";
 
 	setTextColor(consoleColor::MAGENTA);
@@ -76,6 +78,7 @@ void ConsoleUI::PrintFileLoadingMessage(string filePath)
 // Print a message that a specific file is loading
 void ConsoleUI::PrintFileLoadMessage(string filePath)
 {
+	unique_lock<mutex> lock(consoleMutex);
 	setTextColor(consoleColor::MAGENTA);
 
 	cout << " " << filePath;
@@ -106,6 +109,7 @@ void ConsoleUI::PrintError(string errorMessage)
 // Print press key message
 void ConsoleUI::PrintPressKeyMessage(string keyName, string toDo)
 {
+	unique_lock<mutex> lock(consoleMutex);
 	cout << " Press [";
 
 	setTextColor(consoleColor::CYAN);
@@ -120,6 +124,7 @@ void ConsoleUI::PrintPressKeyMessage(string keyName, string toDo)
 // Print search start message
 void ConsoleUI::PrintSearchStartMessage(string searchName)
 {
+	unique_lock<mutex> lock(consoleMutex);
 	cout << " ";
 
 	setTextColor(consoleColor::CYAN);
@@ -134,6 +139,7 @@ void ConsoleUI::PrintSearchStartMessage(string searchName)
 // Print search stop message
 void ConsoleUI::PrintSearchCompleteMessage(string searchName)
 {
+	unique_lock<mutex> lock(consoleMutex);
 	cout << " ";
 
 	setTextColor(consoleColor::CYAN);
@@ -152,6 +158,7 @@ void ConsoleUI::PrintSearchCompleteMessage(string searchName)
 // Print search timing infromation
 void ConsoleUI::PrintSearchTiming(string searchName, long long duration_ms)
 {
+	unique_lock<mutex> lock(consoleMutex);
 	cout << " ";
 
 	setTextColor(consoleColor::CYAN);
@@ -182,6 +189,7 @@ void ConsoleUI::WaitForKeyPress()
 // Clear the console
 void ConsoleUI::Clear()
 {
+	unique_lock<mutex> lock(consoleMutex);
 	system("cls");
 	printTitle("String Searcher");
 	cout << endl;
@@ -190,6 +198,7 @@ void ConsoleUI::Clear()
 // Print the pattern hit results
 void ConsoleUI::PrintResults(string searchName, vector<int>* results, vector<string>* patternList)
 {
+	unique_lock<mutex> lock(consoleMutex);
 	string line = " ";
 
 	for (int i = 0; i < (searchName.size() + 8); i++)
@@ -222,6 +231,48 @@ void ConsoleUI::PrintResults(string searchName, vector<int>* results, vector<str
 		setTextColor(consoleColor::CYAN);
 		cout << (*results)[i] << endl;
 
+		setTextDefault();
+	}
+
+	cout << line << endl;
+	cout << endl;
+}
+
+void ConsoleUI::PrintResults(string searchName, unordered_map<string, int>* results, vector<string>* patternList)
+{
+	unique_lock<mutex> lock(consoleMutex);
+	string line = " ";
+
+	for (int i = 0; i < (searchName.size() + 8); i++)
+	{
+		line += "=";
+	}
+
+	cout << endl;
+	cout << line << endl;
+
+	setTextColor(consoleColor::CYAN);
+	cout << " " << searchName;
+
+	setTextDefault();
+	cout << " Results" << endl;
+
+	cout << line << endl;
+
+	cout << " Pattern\t" << "Matches" << endl;
+	cout << " -------\t" << "-------" << endl;
+
+	for (std::pair<string, int> res : *results)
+	{
+		setTextColor(consoleColor::MAGENTA);
+		cout << " " << res.first;
+
+		setTextDefault();
+		cout << "\t--\t";
+
+		setTextColor(consoleColor::CYAN);
+			
+		cout << res.second << endl;
 		setTextDefault();
 	}
 

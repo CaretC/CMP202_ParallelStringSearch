@@ -13,6 +13,9 @@ text and the positions of these occurances.
 #include <vector>
 #include <thread>
 
+//Test
+#include <unordered_map>
+
 #include "SearchTask.h"
 #include "ConsoleUI.h"
 #include "TaskFarm.h"
@@ -22,6 +25,9 @@ text and the positions of these occurances.
 using std::string;
 using std::vector;
 using std::thread;
+
+// Test
+using std::unordered_map;
 
 // Class
 // =====
@@ -46,7 +52,8 @@ class StringSearcher
 		int SearchParallelSimple(vector<int>* positionsOutput);
 
 		// Conduct a task based parallel search
-		vector<int> SearchParallelTasks(int searchThreads);
+		//vector<int> SearchParallelTasks(int searchThreads);
+		unordered_map<string, int> SearchParallelTasks(int searchThreads);
 
 		// Conduct a task based parallel search and save the positions to an output vector
 		int SearchParallelTasks(vector<int>* positonsOuput);

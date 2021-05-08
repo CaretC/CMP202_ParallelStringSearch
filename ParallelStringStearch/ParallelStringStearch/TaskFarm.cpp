@@ -18,15 +18,19 @@ TaskFarm::TaskFarm(int threads)
 // Public Functions
 // ================
 // Add a task to the Farm, the task will be deleted once it had been run.
-void TaskFarm::Add(Task* task)
+void TaskFarm::Add(SearchTask* task)
 {
 	unique_lock<mutex> lock(mutex_task_queue);
 	task_queue.push(task);
 }
 
 // Run all the tasks in the Farm. 
-void TaskFarm::Run(vector<int>* outResults)
+//void TaskFarm::Run(vector<int>* outResults)
+void TaskFarm::Run(unordered_map<string, int>* outResults)
 {
+	// Test - Unordered map to store results]
+	//unordered_map<string, int> results_map;
+
 	// Vector to store the worker threads
 	vector<thread*> worker_threads;
 
@@ -42,7 +46,8 @@ void TaskFarm::Run(vector<int>* outResults)
 			if (!task_queue.empty())
 			{
 				// Get the pointer of the taskToRun
-				Task* taskToRun = task_queue.front();
+				SearchTask* taskToRun = task_queue.front();
+				string searchPat = taskToRun->GetPattern();
 
 				// Pop this task from the queue
 				task_queue.pop();
@@ -53,7 +58,8 @@ void TaskFarm::Run(vector<int>* outResults)
 				int result = taskToRun->Run();
 
 				mutex_result.lock();
-				outResults->push_back(result);
+				//outResults->push_back(result);
+				(*outResults)[searchPat] = result;
 				mutex_result.unlock();
 			}
 			else

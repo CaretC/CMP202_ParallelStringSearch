@@ -54,67 +54,128 @@ int StringSearcher::SearchSequential(vector<int>* positionsOutput)
 // Conduct a simple parallel search
 vector<int> StringSearcher::SearchParallelSimple(int searchThreads)
 {
+	// Old
+	//this is broken fix it
+	//string searchName = "Parallel CPU Search (Basic)";
+	//pUi->PrintSearchStartMessage(searchName);
+
+	/*vector<int> results;
+	mutex mutex_resutls;*/
+
+	//// Define the number of threads to use
+	//const unsigned int numThreads = searchThreads;
+
+	//// Store the threads
+	//vector<thread*> threads;
+
+	//// Store SearchTasks
+	//vector<SearchTask> searches;
+
+	//// New Implementation
+	//// ++++++++++++++++++++++++++++++
+	//int pos = 0;
+
+	////Make Tasks
+	//for (int i = 0; i < pPatternList->size(); i++)
+	//{
+	//	searches.push_back(SearchTask((*pPatternList)[i], pSearchText));
+	//}
+
+	//// Process tasks over threads
+	//while (pos < pPatternList->size())
+	//{
+	//	// Populate threads
+	//	int threadsCreated = 0;
+	//	for (int i = 0; i < searchThreads; i++)
+	//	{
+	//		if ((i + pos) < pPatternList->size())
+	//		{
+	//			threads.push_back(new thread(&SearchTask::RunParallel, searches[i + pos], &results, &mutex_resutls));
+	//			threadsCreated++;
+	//		}
+	//	}
+
+	//	// Join threads
+	//	for (int i = 0; i < threadsCreated; i++)
+	//	{
+	//		threads[i]->join();
+	//	}
+
+	//	//HACK: Check through this!
+	//	// Clean up memory
+	//	for (int i = 0; i < threads.size(); i++)
+	//	{
+	//		delete threads[i];
+	//	}
+
+	//	// Clear up
+	//	threads.clear();
+
+	//	pos += threadsCreated;
+	//	threadsCreated = 0;
+	//}
+
+	//pUi->PrintSearchCompleteMessage(searchName);
+	// new
 	string searchName = "Parallel CPU Search (Basic)";
 	pUi->PrintSearchStartMessage(searchName);
 
-	vector<int> results;
-	mutex mutex_resutls;
-
-	// Define the number of threads to use
-	const unsigned int numThreads = searchThreads;
-
-	// Store the threads
-	vector<thread*> threads;
-
-	// Store SearchTasks
-	vector<SearchTask> searches;
-
-	// New Implementation
-	// ++++++++++++++++++++++++++++++
+	vector<int> results;	
+	queue<SearchTask*> searches;
 	int pos = 0;
 
-	//Make Tasks
-	for (int i = 0; i < pPatternList->size(); i++)
+	// Populate search queue
+	for (auto pattern : (*pPatternList))
 	{
-		searches.push_back(SearchTask((*pPatternList)[i], pSearchText));
+		searches.push(new SearchTask(pattern, pSearchText));
 	}
 
-	// Process tasks over threads
-	while (pos < pPatternList->size())
+	// While there is still searches in the queue
+	while(!searches.empty())
 	{
-		// Populate threads
-		int threadsCreated = 0;
-		for (int i = 0; i < searchThreads; i++)
+		vector<thread*> threads;
+
+		// Make searchThreads number of threads
+		for (int th = 0; th < searchThreads; th++)
 		{
-			if ((i + pos) < pPatternList->size())
+			if ((searches.size() - th) > 0)
 			{
-				threads.push_back(new thread(&SearchTask::RunParallel, searches[i + pos], &results, &mutex_resutls));
-				threadsCreated++;
+				pUi->PrintMessage("Making thread " + th);
+				// Run seach task from queue
+				threads.push_back(new thread(&SearchTask::RunParallel, searches.front(), &results));
 			}
 		}
 
-		// Join threads
-		for (int i = 0; i < threadsCreated; i++)
+		// Wait for all the running threads to finish
+		for (auto th : threads)
 		{
-			threads[i]->join();
+			pUi->PrintMessage("Joining thread ");
+			th->join();
 		}
 
-		//HACK: Check through this!
-		// Clean up memory
-		for (int i = 0; i < threads.size(); i++)
+		// Clean up threads
+		for (auto th : threads)
 		{
-			delete threads[i];
+			if (!searches.empty())
+			{
+				// Clean up search task from the heap
+				delete searches.front();
+				// Pop the last saerch from the queue
+				searches.pop();
+			}
+
+			delete th;
 		}
 
-		// Clear up
-		threads.clear();
+		//delete[] &threads;
 
-		pos += threadsCreated;
-		threadsCreated = 0;
+		// Clear the thread vector
+		//threads.clear();
 	}
 
-	pUi->PrintSearchCompleteMessage(searchName);
 
+
+	pUi->PrintSearchCompleteMessage(searchName);
 	return results;
 }
 
@@ -126,11 +187,13 @@ int StringSearcher::SearchParallelSimple(vector<int>* positionsOutput)
 }
 
 // Conduct a task based parallel search
-vector<int> StringSearcher::SearchParallelTasks(int searchThreads)
+//vector<int> StringSearcher::SearchParallelTasks(int searchThreads)
+unordered_map<string, int> StringSearcher::SearchParallelTasks(int searchThreads)
 {
 	pUi->PrintSearchStartMessage("Parallel CPU Search (Farm & Worker)");
 
-	vector<int> results;
+	//vector<int> results;
+	unordered_map <string, int> results;
 
 	TaskFarm farm(searchThreads);
 
