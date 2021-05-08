@@ -39,7 +39,7 @@ void CsvWriter::WriteToFile(vector<long long>& results, string outputFilePath)
 		exit(1);
 	}
 }
-// Write 3 searches results to file
+// Write 2 searches results to file
 void CsvWriter::WriteToFile(long long& seqResult, vector<long long>& taskResults, string outputFilePath)
 {
 	// Set ouput file stream

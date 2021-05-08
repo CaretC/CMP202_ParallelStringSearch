@@ -38,6 +38,11 @@ unordered_map<string, int> ParallelSearchTasks(ConsoleUI* ui, StringSearcher* se
 // TODO: Store all of the results for each pattern search. Maybe in a vector<vector<int>>
 // TODO: Include signaling between threads (e.g. conditional variable or semaphor etc.) maybe use this to process the results or something.....
 
+// Globals
+// =======
+	// Print results
+bool printResults = false;
+
 // Main
 // ====
 int main() {
@@ -107,8 +112,6 @@ int main() {
 		}
 
 		StringSearcher pattSearch(&searchText, &varyPatt, &ui);
-
-		timingSimpPatt.push_back(0); //REMOVE
 		unordered_map<string, int> taskParallelResults = ParallelSearchTasks(&ui, &pattSearch, 8, &timingTaskPatt);
 	}
 
@@ -172,7 +175,11 @@ vector<int> SequentialSearch(ConsoleUI* ui, StringSearcher* searcher, long long*
 	ui->PrintSearchTiming("Sequential CPU Search", timerSeq.Duration());
 	*outTiming = timerSeq.Duration();
 
-	ui->PrintResults("Sequential CPU Search", &results, searcher->GetPatternList());
+	if (printResults)
+	{
+		ui->PrintResults("Sequential CPU Search", &results, searcher->GetPatternList());
+	}
+
 	return results;
 }
 
@@ -189,7 +196,11 @@ unordered_map<string, int> ParallelSearchTasks(ConsoleUI* ui, StringSearcher* se
 	farmTimer.Stop();
 	ui->PrintSearchTiming("Parallel CPU Search (Farm & Worker)", farmTimer.Duration());
 
-	ui->PrintResults("Parallel CPU Search (Farm & Worker)", &results, searcher->GetPatternList());
+	if (printResults)
+	{
+		ui->PrintResults("Parallel CPU Search (Farm & Worker)", &results, searcher->GetPatternList());
+	}
+
 	outTiming->push_back(farmTimer.Duration());
 
 	return results;
