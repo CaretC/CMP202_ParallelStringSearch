@@ -12,21 +12,18 @@ text and the positions of these occurances.
 #include <string>
 #include <vector>
 #include <thread>
-
-//Test
 #include <unordered_map>
 
 #include "SearchTask.h"
 #include "ConsoleUI.h"
 #include "TaskFarm.h"
+#include "Channel.h"
 
 // Imports
 // =======
 using std::string;
 using std::vector;
 using std::thread;
-
-// Test
 using std::unordered_map;
 
 // Class

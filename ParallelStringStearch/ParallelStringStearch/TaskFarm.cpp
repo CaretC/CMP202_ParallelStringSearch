@@ -25,7 +25,7 @@ void TaskFarm::Add(SearchTask* task)
 }
 
 // Run all the tasks in the Farm. 
-void TaskFarm::Run(unordered_map<string, int>* outResults)
+void TaskFarm::Run(Channel* outResults)
 {
 	// Vector to store the worker threads
 	vector<thread*> worker_threads;
@@ -55,7 +55,8 @@ void TaskFarm::Run(unordered_map<string, int>* outResults)
 
 				mutex_result.lock();
 				//outResults->push_back(result);
-				(*outResults)[searchPat] = result;
+				//(*outResults)[searchPat] = result;
+				outResults->Write(std::pair<string, int>(searchPat, result));
 				mutex_result.unlock();
 			}
 			else

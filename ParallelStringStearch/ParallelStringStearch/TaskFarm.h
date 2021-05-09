@@ -18,6 +18,7 @@ Task farm to process all the tasks in a farm utilizing the specified number of t
 
 #include "Task.h"
 #include "SearchTask.h"
+#include "Channel.h"
 
 // Imports
 // =======
@@ -45,7 +46,7 @@ class TaskFarm
 		void Add(SearchTask* task);
 
 		// Run all the tasks in the Farm. 
-		void Run(unordered_map<string, int>* outResults);
+		void Run(Channel* outResults);
 
 	// Private
 	// -------

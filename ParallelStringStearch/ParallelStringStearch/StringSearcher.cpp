@@ -56,9 +56,23 @@ unordered_map<string, int> StringSearcher::SearchParallelTasks(int searchThreads
 {
 	pUi->PrintSearchStartMessage("Parallel CPU Search (Farm & Worker)");
 
-	//vector<int> results;
 	unordered_map <string, int> results;
 
+	// Make Channel to handle data writing
+	Channel dataChan(&results);
+	dataChan.Open();
+
+	// Make the Channel writer thread
+	thread writerThread([&] {
+	while (dataChan.IsOpen())
+	{
+		pair<string, int> res;
+		dataChan.read(&res);
+		results[res.first] = res.second;
+	}
+	});
+
+	// Make the search task farm
 	TaskFarm farm(searchThreads);
 
 	// Add a task for each of the patterns to be searched for
@@ -68,7 +82,11 @@ unordered_map<string, int> StringSearcher::SearchParallelTasks(int searchThreads
 	}
 
 	// Run all the farm tasks
-	farm.Run(&results);
+	farm.Run(&dataChan);
+
+	// Close the data channel and join writer thread to the main
+	dataChan.Close();
+	writerThread.join(); // Could a barrier be used here
 
 	pUi->PrintSearchCompleteMessage("Parallel CPU Search (Farm & Worker)");
 

@@ -18,6 +18,7 @@ CMP 202 Coursework - Parallel String Search
 #include "TaskFarm.h"
 #include "SearchTask.h"
 #include "StringSearcher.h"
+#include "Channel.h"
 
 // Imports
 // =======
@@ -40,8 +41,8 @@ unordered_map<string, int> ParallelSearchTasks(ConsoleUI* ui, StringSearcher* se
 
 // Globals
 // =======
-	// Print results
-bool printResults = false;
+// Print results
+bool printResults = true;
 
 // Main
 // ====
@@ -62,6 +63,25 @@ int main() {
 	// Pattern Timings
 	vector<long long> timingSimpPatt;
 	vector<long long> timingTaskPatt;
+
+	// Chan TEST CODE
+	//unordered_map<string, int> chanTestOut;
+	//Channel chan(&chanTestOut);
+	//thread writerThread([&] {
+	//	while (true)
+	//	{
+	//		pair<string, int> res;
+	//		chan.read(&res);
+	//		chanTestOut[res.first] = res.second;
+	//	}
+	//	});
+
+	//chan.Write(std::pair<string, int>("1", 1));
+	//chan.Write(std::pair<string, int>("2", 2));
+	//chan.Write(std::pair<string, int>("3", 3));
+	//chan.Write(std::pair<string, int>("4", 4));
+
+	//chan.Close();
 
 	// Welcome Screen
 	// --------------

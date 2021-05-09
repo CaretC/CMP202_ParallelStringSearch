@@ -141,6 +141,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BenchmarkTimer.cpp" />
+    <ClCompile Include="Channel.cpp" />
     <ClCompile Include="CharTable.cpp" />
     <ClCompile Include="ConsoleUI.cpp" />
     <ClCompile Include="CsvWriter.cpp" />
@@ -153,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BenchmarkTimer.h" />
+    <ClInclude Include="Channel.h" />
     <ClInclude Include="CharTable.h" />
     <ClInclude Include="ConsoleUI.h" />
     <ClInclude Include="CsvWriter.h" />
