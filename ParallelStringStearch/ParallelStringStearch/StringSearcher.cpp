@@ -44,13 +44,6 @@ vector<int> StringSearcher::SearchSequential()
 	return results;
 }
 
-// Conduct a sequential string search and save the positions to an output vector
-int StringSearcher::SearchSequential(vector<int>* positionsOutput)
-{
-	// TODO: Implement SearchSequential(vector<int>* positionsOutput)
-	return 0;
-}
-
 // Conduct a task based parallel search
 unordered_map<string, int> StringSearcher::SearchParallelTasks(int searchThreads)
 {
@@ -60,6 +53,7 @@ unordered_map<string, int> StringSearcher::SearchParallelTasks(int searchThreads
 
 	// Make Channel to handle data writing
 	Channel dataChan(&results);
+	barrier threadBarrier(1);
 	dataChan.Open();
 
 	// Make the Channel writer thread
@@ -67,7 +61,7 @@ unordered_map<string, int> StringSearcher::SearchParallelTasks(int searchThreads
 	while (dataChan.IsOpen())
 	{
 		pair<string, int> res;
-		dataChan.read(&res);
+		dataChan.Read(&res);
 		results[res.first] = res.second;
 	}
 	});
@@ -86,18 +80,12 @@ unordered_map<string, int> StringSearcher::SearchParallelTasks(int searchThreads
 
 	// Close the data channel and join writer thread to the main
 	dataChan.Close();
-	writerThread.join(); // Could a barrier be used here
+	writerThread.join();
+
 
 	pUi->PrintSearchCompleteMessage("Parallel CPU Search (Farm & Worker)");
 
 	return results;
-}
-
-// Conduct a task based parallel search and save the positions to an output vector
-int StringSearcher::SearchParallelTasks(vector<int>* positonsOuput)
-{
-	// TODO: Implement SearchParallelTasks(vector<int>* positonsOuput)
-	return 0;
 }
 
 // Get the PatternList assosciated with this StringSearcher instance

@@ -33,7 +33,6 @@ void CsvWriter::WriteToFile(vector<long long>& results, string outputFilePath)
 	// If the files dosn't open print error
 	else
 	{
-		// TODO: Print Error
 		cout << "ERROR!" << endl;
 		cin;
 		exit(1);
@@ -64,7 +63,6 @@ void CsvWriter::WriteToFile(long long& seqResult, vector<long long>& taskResults
 	// If the files dosn't open print error
 	else
 	{
-		// TODO: Print Error
 		cout << "ERROR!" << endl;
 		cin;
 		exit(1);

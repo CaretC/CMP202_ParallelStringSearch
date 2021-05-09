@@ -34,14 +34,14 @@ void ConsoleUI::PrintWelcome()
        .-'      `-.           Welcome the String Searcher, this tool uses the Boyer Moor Horspool
      .'            `.         algorithm to search through a text file for a list of patterns.
     /                \         
-   ;                 ;`       There are several modes to this programme that conduct this search in 
-   |                 |;       different ways. These are:
-   ;                 ;|			
-   '\               / ;          * A sequential search of the pattern list in text
-    \`.           .' /           * A simple CPU parallel search with a thread per pattern
-     `.`-._____.-' .'            * A busy waiting task based parallel search
-      / /`_____.-'               * GPU?
-     / / /                       * Accelerated by split text?
+   ;                 ;`       This programme is used to compare the performace based on the thread 
+   |                 |;       number used for the search, the method used and the length of the
+   ;                 ;|       search pattern list. It compares the below:	
+   '\               / ;         
+    \`.           .' /           * Standard sequential search for the entire pattern list.
+     `.`-._____.-' .'            * A parallel search using a task based system comparing the speed with 1-20 threads.
+      / /`_____.-'               * Vary the pattern list length from 1 to the pattern list length using 8 threads.
+     / / /                       
     / / /
    / / /
   / / /

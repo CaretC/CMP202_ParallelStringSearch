@@ -13,6 +13,7 @@ text and the positions of these occurances.
 #include <vector>
 #include <thread>
 #include <unordered_map>
+#include <barrier>
 
 #include "SearchTask.h"
 #include "ConsoleUI.h"
@@ -25,6 +26,8 @@ using std::string;
 using std::vector;
 using std::thread;
 using std::unordered_map;
+
+using std::barrier;
 
 // Class
 // =====
@@ -39,15 +42,8 @@ class StringSearcher
 		// Conduct a sequential string search
 		vector<int> SearchSequential();
 
-		// Conduct a sequential string search and save the positions to an output vector
-		int SearchSequential(vector<int>* positionsOutput);
-
 		// Conduct a task based parallel search
-		//vector<int> SearchParallelTasks(int searchThreads);
 		unordered_map<string, int> SearchParallelTasks(int searchThreads);
-
-		// Conduct a task based parallel search and save the positions to an output vector
-		int SearchParallelTasks(vector<int>* positonsOuput);
 
 		// Get the PatternList pointer assosciated with this StringSearcher instance
 		vector<string>* GetPatternList();

@@ -5,7 +5,6 @@ CMP 202 Coursework - Parallel String Search
 // Includes
 // ========
 #include <iostream>
-#include <thread>
 #include <string>
 #include <unordered_map>
 
@@ -14,17 +13,12 @@ CMP 202 Coursework - Parallel String Search
 #include "CsvWriter.h"
 #include "TextLoader.h"
 #include "PatternListLoader.h"
-#include "CharTable.h"
-#include "TaskFarm.h"
-#include "SearchTask.h"
 #include "StringSearcher.h"
-#include "Channel.h"
 
 // Imports
 // =======
 using std::cout;
 using std::endl;
-using std::thread;
 using std::string;
 using std::unordered_map;
 
@@ -35,9 +29,6 @@ string LoadSearchTextFile(ConsoleUI* ui, string filePath);
 vector<string> LoadPatternListFile(ConsoleUI* ui, string filePath);
 vector<int> SequentialSearch(ConsoleUI* ui, StringSearcher* searcher, long long* outTiming);
 unordered_map<string, int> ParallelSearchTasks(ConsoleUI* ui, StringSearcher* searcher, int threadQuantity, vector<long long>* outTiming);
-
-// TODO: Store all of the results for each pattern search. Maybe in a vector<vector<int>>
-// TODO: Include signaling between threads (e.g. conditional variable or semaphor etc.) maybe use this to process the results or something.....
 
 // Globals
 // =======
@@ -64,40 +55,19 @@ int main() {
 	vector<long long> timingSimpPatt;
 	vector<long long> timingTaskPatt;
 
-	// Chan TEST CODE
-	//unordered_map<string, int> chanTestOut;
-	//Channel chan(&chanTestOut);
-	//thread writerThread([&] {
-	//	while (true)
-	//	{
-	//		pair<string, int> res;
-	//		chan.read(&res);
-	//		chanTestOut[res.first] = res.second;
-	//	}
-	//	});
-
-	//chan.Write(std::pair<string, int>("1", 1));
-	//chan.Write(std::pair<string, int>("2", 2));
-	//chan.Write(std::pair<string, int>("3", 3));
-	//chan.Write(std::pair<string, int>("4", 4));
-
-	//chan.Close();
-
 	// Welcome Screen
 	// --------------
 	PrintWelcomeScreen(&ui);
 
 	// Load text
 	// ----------
-	//searchText = LoadSearchTextFile(&ui, "testText.txt");
-	searchText = LoadSearchTextFile(&ui, "bible.txt");
-	//searchText = LoadSearchTextFile(&ui, "calibrationText.txt");
+	// Search Text 'The King James version of the bible' taken from large.zip from https://corpus.canterbury.ac.nz/descriptions/
+	searchText = LoadSearchTextFile(&ui, "SearchTexts/bible.txt");
 
 	// Load Pattern List
 	// -----------------
-	//patternList = LoadPatternListFile(&ui, "textPatterns.txt");
-	patternList = LoadPatternListFile(&ui, "100-Common.txt");
-	//patternList = LoadPatternListFile(&ui, "calibrationPat.txt");
+	// Custom compiled pattern list of the top 100 most common english words to search
+	patternList = LoadPatternListFile(&ui, "PatternLists/100-Common.txt");
 
 	// Main Code
 	// ---------
@@ -135,12 +105,7 @@ int main() {
 		unordered_map<string, int> taskParallelResults = ParallelSearchTasks(&ui, &pattSearch, 8, &timingTaskPatt);
 	}
 
-	long long x = 0;
-	cw.WriteToFile(x, timingTaskPatt, "varyPatternTiming.csv");
-
-	// Vary Text Length
-	// ----------------
-	// TODO: Implement
+	cw.WriteToFile(timingTaskPatt, "varyPatternTiming.csv");
 }
 // ============================================================================================================================
 

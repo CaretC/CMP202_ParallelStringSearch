@@ -27,20 +27,16 @@ Channel::~Channel()
 void Channel::Open()
 {
 	channelOpen = true;
-
-	//thread writerThread([&]{
-	//		while (channelOpen)
-	//		{
-	//			pair<string, int> res;
-	//			read(&res);
-	//			(*pOutResults)[res.first] = res.second;
-	//		}		
-	//	});
 }
 
 // Close
 void Channel::Close()
 {
+	while (!channelBuffer.empty())
+	{
+		// Wait until the channel buffer is empty
+	}
+
 	channelOpen = false;
 }
 
@@ -53,7 +49,7 @@ void Channel::Write(pair<string, int> results)
 }
 
 // Read data from the channel buffer
-void Channel::read(pair<string, int>* outRes)
+void Channel::Read(pair<string, int>* outRes)
 {
 	pair<string, int> res;
 	unique_lock<mutex> lock(bufferMutex);
@@ -67,6 +63,7 @@ void Channel::read(pair<string, int>* outRes)
 	}
 }
 
+// Returns if the channel is open or not
 bool Channel::IsOpen()
 {
 	return channelOpen;
@@ -74,15 +71,6 @@ bool Channel::IsOpen()
 
 // Private Functions
 // =================
-// Write Thread
-void Channel::writeThread()
-{
-	while (channelOpen)
-	{
-		pair<string, int> res;
-		read(&res);
-		(*pOutResults)[res.first] = res.second;
-	}
-}
+
 
 

@@ -75,7 +75,6 @@ int SearchTask::BMHSearch(string pattern, string* text)
 		if (j == pattTable.Length())
 		{
 			matches++;
-			// TODO: Save this somewhere
 			//cout << "Match found at position " << i << endl;
 		}
 		else

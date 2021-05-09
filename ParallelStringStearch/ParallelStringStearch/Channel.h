@@ -45,11 +45,10 @@ class Channel
 		// Write data to the channel
 		void Write(pair<string, int> result);
 
-		// Write Thread
-		void writeThread();
 		// Read data from the channel buffer
-		void read(pair<string, int>* outRes);
+		void Read(pair<string, int>* outRes);
 
+		// Returns if the channel is open or not
 		bool IsOpen();
 
 	// Private
