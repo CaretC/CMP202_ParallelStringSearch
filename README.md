@@ -22,5 +22,5 @@ Notes On Compilation
 --------------------
 This application takes advantage of the std::barrier avaliable in C++20. This requires the solution C++ Language Standard to be set use the **Preview - Features from the Latest CPP Working Draft.**. Shown below. This is accessed by right-clicking the colution and navigating to the drop down in C/C++ => Language => C++ Language Standard.
 
-![Required C++ Standard](ReameImgs/RequiredCppLanguage.png)
+![Required C++ Standard](ReadmeImgs/RequiredCppLanguage.png)
 
