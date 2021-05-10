@@ -33,7 +33,11 @@ unordered_map<string, int> ParallelSearchTasks(ConsoleUI* ui, StringSearcher* se
 // Globals
 // =======
 // Print results
+// Set to false for benchmark runs
 bool printResults = true;
+// Total Runs
+// 100 used for benchmark runs
+int totalRuns = 1;
 
 // Main
 // ====
@@ -73,39 +77,49 @@ int main() {
 	// ---------
 	int numberOfPatterns = patternList.size();
 
-	// Sequential Search
-	// -----------------
-	vector<int> sequentialResults = SequentialSearch(&ui, &Searcher, &timingSeq);
-
-	// Vary Thread Number
-	// -------------------
-	for (int threads = 1; threads <= 20; threads++)
+	// Run totalRuns number of times
+	for (int run = 0; run < totalRuns; run++)
 	{
-		// Parallel Search (Task Based)
-		// ----------------------------
-		unordered_map<string, int> taskParallelResults = ParallelSearchTasks(&ui, &Searcher, threads, &timingTask);
-	}
 
-	cw.WriteToFile(timingSeq, timingTask, "varyThreadsTiming.csv");
+		// Sequential Search
+		// -----------------
+		vector<int> sequentialResults = SequentialSearch(&ui, &Searcher, &timingSeq);
 
-	// Vary Patterns
-	// --------------
-	for (int patterns = 1; patterns <= patternList.size(); patterns++)
-	{
-		string msg = "Searching for " + patterns;
-		ui.PrintMessage(msg);
-		vector<string> varyPatt;
-
-		for (int i = 0; i < patterns; i++)
+		// Vary Thread Number
+		// -------------------
+		for (int threads = 1; threads <= 20; threads++)
 		{
-			varyPatt.push_back(patternList[i]);			
+			// Parallel Search (Task Based)
+			// ----------------------------
+			unordered_map<string, int> taskParallelResults = ParallelSearchTasks(&ui, &Searcher, threads, &timingTask);
 		}
 
-		StringSearcher pattSearch(&searchText, &varyPatt, &ui);
-		unordered_map<string, int> taskParallelResults = ParallelSearchTasks(&ui, &pattSearch, 8, &timingTaskPatt);
+		string threadsOutName = "Results/varyThreadsTiming(" + std::to_string(run + 1) + ").csv";
+		cw.WriteToFile(timingSeq, timingTask, threadsOutName);
+
+		// Vary Patterns
+		// --------------
+		for (int patterns = 1; patterns <= patternList.size(); patterns++)
+		{
+			string msg = "Searching for " + patterns;
+			ui.PrintMessage(msg);
+			vector<string> varyPatt;
+
+			for (int i = 0; i < patterns; i++)
+			{
+				varyPatt.push_back(patternList[i]);
+			}
+
+			StringSearcher pattSearch(&searchText, &varyPatt, &ui);
+			unordered_map<string, int> taskParallelResults = ParallelSearchTasks(&ui, &pattSearch, 8, &timingTaskPatt); 
+		}
+
+		string patternOutName = "Results/varyPatternTiming(" + std::to_string(run + 1) + ").csv";
+		cw.WriteToFile(timingTaskPatt, patternOutName); 
 	}
 
-	cw.WriteToFile(timingTaskPatt, "varyPatternTiming.csv");
+	ui.PrintMessage("All searches complete!");
+	ui.WaitForKeyPress();
 }
 // ============================================================================================================================
 
