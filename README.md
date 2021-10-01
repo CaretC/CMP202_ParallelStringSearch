@@ -1,11 +1,14 @@
 CMP 202 Coursework - Parallel String Search
 ===========================================
+> | Disclaimer: | This is the coursework that was sumitted for an assessment, feel free to be inspired or get in touch with me about the code base. Please do not plaigarise as you'll likely get caught which is not a good look for anyone. |
+> |-------------|:--------------------|
 
 ```
 Author - Joseph Lee
 Student Number - 1903399
 Date - 10/05/2021
 ```
+> If you have any questions about this project then [contact me](mailto:1903399@uad.ac.uk?subject=[Github]%20-%20Parallel%20String%20Search%20Contact) and I would be happy to answer any queries. 
 
 Summary
 -------
